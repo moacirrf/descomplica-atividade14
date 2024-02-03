@@ -4,7 +4,11 @@ class FormController {
         this.alert = document.getElementById("alert");
 
     }
-
+    /**
+     * Responde ao evente de clicar do botao pesquisar
+     * 
+     * @param {*} event 
+     */
     search(event) {
         if (this.inputNome.validity.valid) {
             this.inputNome.classList.remove("is-invalid");
@@ -17,18 +21,33 @@ class FormController {
         event.preventDefault();
     }
 
+    /**
+     * Exibe o Alert de erro do bootstrap
+     * 
+     * @param {*} message 
+     */
     showMessage(message) {
         document.getElementById("message").textContent = message;
         this.alert.classList.remove("invisible");
         this.alert.classList.add("visible");
     }
 
+    /**
+     * Fecha o Alert de erro do bootstrap
+     * 
+     * @param {*} message 
+     */
     closeMessage() {
         document.getElementById("message").textContent = "";
         this.alert.classList.add("invisible");
         this.alert.classList.remove("visible");
     }
 
+    /**
+     * Pesquisa no site do IBGE
+     * 
+     * @param {*} nome - Nome da pessoa que se deseja pesquisar.
+     */
     _getData(nome) {
         fetch(`https://servicodados.ibge.gov.br/api/v2/censos/nomes/${nome}`)
             .then(response => response.json())
@@ -48,6 +67,11 @@ class FormController {
 
     }
 
+    /**
+     * Preenche a tabela do Bootstrap
+     * 
+     * @param {*} resultado 
+     */
     _fillTable(resultado) {
 
         function createTd(value) {
