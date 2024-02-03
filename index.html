@@ -24,15 +24,16 @@
             }
 
 
-            search(button) {
+            search(event) {
                 if (this.inputNome.validity.valid) {
                     this.inputNome.classList.remove("is-invalid");
                     this._getData(this.inputNome.value)
                     this.closeMessage();
                 } else {
-                    this.showMessage("Nome é obrgatório!");
+                    this.showMessage("Nome é obrigatório!");
                     this.inputNome.classList.add("is-invalid");
                 }
+                event.preventDefault();
             }
 
             showMessage(message) {
@@ -60,7 +61,6 @@
                     .then(object => {
                         this.closeMessage();
                         this._fillTable(object);
-                        console.log(object)
                     }).catch(error => {
                         this.showMessage(error.message);
                     });
@@ -68,34 +68,31 @@
             }
 
             _fillTable(resultado) {
-                function createTd(text) {
-                    const td = document.createElement('TD');
-                    if (!text) {
-                        text = "Sem dados";
-                    }
-                    if (typeof (text) === Array) {
 
+                function createTd(value) {
+                    const td = document.createElement('TD');
+                    if (!value) {
+                        value = "Sem dados";
+                    }
+                    if (typeof (value) === "object") {
+                        const ul = document.createElement("ul");
+                        value.forEach(item => {
+                            const li = document.createElement("li");
+                            li.innerHTML = `<div><b>Período: </b> ${item.periodo.replaceAll('[', '')}</div>  <b>Frequência: </b>${item.frequencia} </br>`;
+                            ul.append(li);
+                        });
+                        td.append(ul);
                     } else {
-                        td.textContent = text;
+                        td.textContent = value;
                     }
                     return td;
                 }
-                function createUl(periodo) {
-                    const ul = document.createElement("UL");
-                    console.log(periodo);
-                    // periodo.each(item => {
-                    //     console.log(item);
-                    // });
-                }
                 const tr = document.createElement("TR");
                 tr.append(createTd(resultado.nome));
-                tr.append(createTd(resultado.sexo));
                 tr.append(createTd(resultado.localidade));
-                const tdPeriodo = createTd("");
-                tdPeriodo.append(createUl(resultado.res));
-                tr.append(tdPeriodo);
-                document.getElementById("tbodyTable").append(tr);
-
+                tr.append(createTd(resultado.res));
+                console.log(document.getElementById("tbodyTable").getElementsByTagName("tr"));
+                document.getElementById("tbodyTable").innerHTML = tr.outerHTML;
             }
         }
         let controller;
@@ -129,7 +126,7 @@
 
                     <small id="nomeHelp" class="form-text text-muted">Informe apenas um nome de pessoa.</small>
                 </div>
-                <button id="pesquisar" onclick="controller.search(this)" type="submit"
+                <button id="pesquisar" onclick="controller.search(event)" type="submit"
                     class="btn btn-primary">Pesquisar</button>
 
             </form>
@@ -140,9 +137,8 @@
                 <thead>
                     <tr>
                         <th scope="col">Nome</th>
-                        <th scope="col">Sexo</th>
                         <th scope="col">Localidade</th>
-                        <th scope="col">Período</th>
+                        <th scope="col">Período e Frequência</th>
                     </tr>
                 </thead>
                 <tbody id="tbodyTable">
