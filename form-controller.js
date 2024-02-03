@@ -63,6 +63,7 @@ class FormController {
                 this._fillTable(object);
             }).catch(error => {
                 this.showMessage(error.message);
+                document.getElementById("tbodyTable").innerHTML = '';
             });
 
     }
